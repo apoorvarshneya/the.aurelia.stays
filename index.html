@@ -1,11 +1,49 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>The Aurelia Stays | Review helper</title><link rel="icon" href="assets/favicon.png"><link rel="stylesheet" href="css/style.css"></head>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>The Aurelia Stays | Review Helper</title>
+<style>
+:root{--ink:#252525;--muted:#666;--line:#ded8d1;--accent:#73523d;--soft:#f7f4f1}
+*{box-sizing:border-box}body{position:relative;isolation:isolate;min-height:100vh;margin:0;background:transparent;font-family:Arial,Helvetica,sans-serif;color:var(--ink);padding:18px;display:flex;align-items:center;justify-content:center}
+body:before{content:'';position:fixed;inset:-12px;z-index:-2;background:url('room-background.jpg') center 52%/cover no-repeat;filter:blur(8px);transform:scale(1.03)}body:after{content:'';position:fixed;inset:0;z-index:-1;background:rgba(255,255,255,.52);pointer-events:none}
+main{width:100%;max-width:520px;background:rgba(255,255,255,.95);border:1px solid var(--line);border-radius:22px;padding:22px;box-shadow:0 12px 40px #38291b20;backdrop-filter:blur(3px)}header{text-align:center;margin-bottom:20px}.brand-logo{display:block;width:min(150px,48%);height:auto;max-height:130px;object-fit:contain;margin:0 auto 7px}h1{font-family:Georgia,serif;font-weight:normal;font-size:28px;margin:4px 0 0}
+label{display:block;font-size:14px;font-weight:700;margin:0 0 7px}select,textarea{width:100%;font:inherit;border:1px solid #cfcfcf;border-radius:10px;padding:12px;background:#fff;color:var(--ink)}select{margin-bottom:14px}textarea{height:210px;resize:vertical;line-height:1.55}
+.actions{display:flex;align-items:stretch;gap:8px;margin-top:12px}.icon-btn{flex:0 0 46px;width:46px;height:46px;padding:0;display:inline-flex;align-items:center;justify-content:center;font-size:22px;background:#fff;color:var(--accent);border:1px solid var(--accent);border-radius:10px}.primary{flex:1;min-width:0;min-height:46px;padding:10px 12px;background:var(--accent);color:#fff;border:1px solid var(--accent);border-radius:10px;font-weight:700;font-size:14px;white-space:nowrap}
+button{cursor:pointer;font:inherit}button:disabled{opacity:.65;cursor:wait}.status{font-size:12px;min-height:16px;margin-top:8px;color:#356b43;line-height:1.4}@media(max-width:390px){body{padding:10px}main{padding:16px}.brand-logo{width:120px}.primary{font-size:12px;padding:8px 6px}.icon-btn{flex-basis:42px;width:42px;height:44px}.actions{gap:6px}}
+</style></head>
 <body><main>
-<header><img class="brand-logo" src="assets/aurelia-logo.png" alt="The Aurelia Stays logo"><div class="eyebrow">A thoughtful stay begins with your feedback</div><h1>The Aurelia Stays</h1><p>Share your stay in the language you prefer.</p></header>
-<label for="language">Choose language / भाषा चुनें</label><select id="language"></select>
-<label for="review">Review draft</label><textarea id="review" spellcheck="true"></textarea>
-<div class="actions"><button id="dice">🎲 Roll dice · New review</button><button id="copy">Copy review</button></div>
-<div class="actions"><button class="primary" id="maps">Copy review &amp; open Google Maps ↗</button></div>
-<div id="status" class="status" role="status"></div>
-<div class="note">Emoji are optional expressive touches, not proof that a review is genuine. Keep only statements that match your own stay. This helper opens Google Maps after copying your draft. Google controls its review form, so paste the text there, choose the rating that reflects your stay, and submit it yourself.</div>
+<header><img class="brand-logo" src="aurelia-logo.jpg" alt="The Aurelia Stays logo"><h1>The Aurelia Stays</h1></header>
+<label for="language">भाषा चुनें / Choose language</label>
+<select id="language" aria-label="Choose review language">
+<option value="English">English</option><option value="Hindi">हिन्दी — Hindi</option><option value="Gujarati">ગુજરાતી — Gujarati</option><option value="Bengali">বাংলা — Bengali</option><option value="Marathi">मराठी — Marathi</option><option value="Tamil">தமிழ் — Tamil</option><option value="Telugu">తెలుగు — Telugu</option><option value="Kannada">ಕನ್ನಡ — Kannada</option><option value="Malayalam">മലയാളം — Malayalam</option><option value="Punjabi">ਪੰਜਾਬੀ — Punjabi</option>
+</select>
+<textarea id="review" aria-label="Review draft" placeholder="Your review draft will appear here. Edit it so it matches your actual stay." spellcheck="true"></textarea>
+<div class="actions">
+<button class="icon-btn" id="dice" aria-label="Roll dice for another draft" title="Generate another draft">🎲</button>
+<button class="icon-btn" id="copy" aria-label="Copy review" title="Copy review">▢</button>
+<button class="primary" id="maps">Copy review &amp; open Google Maps ↗</button>
+</div>
+<div id="status" class="status" role="status" aria-live="polite"></div>
 </main>
-<script src="js/languages.js"></script><script src="js/reviews.js"></script><script src="js/clipboard.js"></script><script src="js/app.js"></script></body></html>
+<script>
+const mapsUrl='https://www.google.com/maps/place/The+Aurelia+Stays/@25.3182544,82.9851345,17z/data=!4m24!1m13!3m12!1s0x398e2d28307f822f:0x3d5ea1c72d8e0286!2sThe+Aurelia+Stays!5m3!1s2027-08-07!4m1!1i2!8m2!3d25.3182496!4d82.9877094!9m1!1b1!16s%2Fg%2F11z8s6hngm!3m9!1s0x398e2d28307f822f:0x3d5ea1c72d8e0286!5m3!1s2027-08-07!4m1!1i2!8m2!3d25.3182496!4d82.9877094!16s%2Fg%2F11z8s6hngm?entry=ttu&g_ep=EgoyMDI2MTAxMy4wIKXMDSoASAFQAw%3D%3D';
+const language=document.getElementById('language'), review=document.getElementById('review'), status=document.getElementById('status'), dice=document.getElementById('dice'), copy=document.getElementById('copy'), maps=document.getElementById('maps');
+const historyByLanguage={};
+async function generateDraft(){
+ const lang=language.value; dice.disabled=true; dice.textContent='…'; status.textContent='Generating a new draft…';
+ try{
+  const response=await fetch('/api/generate-review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({language:lang,previous:historyByLanguage[lang]||[]})});
+  const data=await response.json(); if(!response.ok) throw new Error(data.error||'Could not generate a draft.');
+  const draft=String(data.review||'').trim(); if(!draft) throw new Error('No draft was returned. Please try again.');
+  review.value=draft; historyByLanguage[lang]=[...(historyByLanguage[lang]||[]),draft].slice(-30); status.textContent='Draft ready. Edit it to match your actual stay before posting.';
+ }catch(e){status.textContent=(e.message||'Could not generate a draft.')+' Check that OPENAI_API_KEY is set in Vercel.'}
+ finally{dice.disabled=false;dice.textContent='🎲'}
+}
+async function copyDraft(){if(!review.value.trim()){status.textContent='Roll the dice to generate a draft first.';return false}try{await navigator.clipboard.writeText(review.value);return true}catch(e){review.focus();review.select();status.textContent='Clipboard access was blocked. Copy the selected text manually.';return false}}
+dice.addEventListener('click',generateDraft);
+copy.addEventListener('click',async()=>{if(await copyDraft())status.textContent='Review copied.'});
+maps.addEventListener('click',async()=>{if(await copyDraft()){window.open(mapsUrl,'_blank','noopener,noreferrer');status.textContent='Review copied. Google Maps opened; paste and submit the review yourself.'}});
+language.addEventListener('change',generateDraft);
+generateDraft();
+</script></body></html>
